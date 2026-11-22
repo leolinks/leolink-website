@@ -27,15 +27,24 @@
     var lastFocus = null;
     var closing = false;
 
+    var hashAliases = {
+      "staff-check-bot": "staff-exclusion-audit",
+      "audit-bot": "chart-audit"
+    };
+
+    function canonicalId(id) {
+      return hashAliases[id] || id;
+    }
+
     function isProduct(id) {
-      return ids.indexOf(id) !== -1;
+      return ids.indexOf(canonicalId(id)) !== -1;
     }
 
     function productIdFromLink(link) {
       if (!link) return "";
       var href = link.getAttribute("href") || "";
       var hash = href.split("#")[1] || "";
-      return isProduct(hash) ? hash : "";
+      return isProduct(hash) ? canonicalId(hash) : "";
     }
 
     function fill(id) {
@@ -148,6 +157,7 @@
     }
 
     function openProduct(id, opener, fromHistory) {
+      id = canonicalId(id);
       if (!isProduct(id)) return;
       currentId = id;
       if (opener) lastFocus = opener;
@@ -250,12 +260,12 @@
     });
 
     window.addEventListener("popstate", function () {
-      var id = location.hash.slice(1);
+      var id = canonicalId(location.hash.slice(1));
       if (isProduct(id)) openProduct(id, lastFocus, true);
       else if (dialog.open) requestClose(true);
     });
 
-    var initial = location.hash.slice(1);
+    var initial = canonicalId(location.hash.slice(1));
     if (isProduct(initial)) {
       var initialLink = document.querySelector('.product-card a[href="#' + initial + '"]');
       openProduct(initial, initialLink, true);
