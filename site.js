@@ -1,4 +1,63 @@
 (function () {
+  function initDepth() {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var header = document.querySelector(".site-header");
+    if (header) {
+      var markScrolled = function () {
+        header.classList.toggle("is-scrolled", window.scrollY > 8);
+      };
+      markScrolled();
+      window.addEventListener("scroll", markScrolled, { passive: true });
+    }
+
+    var grids = document.querySelectorAll(".card-grid, .pillar-grid, .challenge-grid, .support-grid");
+    grids.forEach(function (grid) {
+      Array.prototype.forEach.call(grid.children, function (child, index) {
+        child.style.setProperty("--reveal-delay", (index * 70) + "ms");
+      });
+    });
+
+    if (!reduce && "IntersectionObserver" in window) {
+      var candidates = document.querySelectorAll(
+        "main > .section, main > .cta-band, main > .trust-strip, .card, .pillar, .challenge, .support-card, .industry-lead, .fact"
+      );
+      var reveal = [];
+      candidates.forEach(function (el) {
+        if (el.closest(".product-dialog")) return;
+        var top = el.getBoundingClientRect().top;
+        if (top < window.innerHeight * 0.92) return;
+        el.classList.add("reveal");
+        reveal.push(el);
+      });
+      if (reveal.length) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("is-in");
+            observer.unobserve(entry.target);
+          });
+        }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+        reveal.forEach(function (el) { observer.observe(el); });
+      }
+
+      var photos = document.querySelectorAll(".hero-photo img, .story-photo img");
+      if (photos.length && window.innerWidth > 760) {
+        var onParallax = function () {
+          photos.forEach(function (img) {
+            var figure = img.closest("figure");
+            if (!figure) return;
+            var shift = figure.getBoundingClientRect().top * -0.05;
+            if (shift > 18) shift = 18;
+            if (shift < -18) shift = -18;
+            img.style.transform = "translate3d(0," + shift.toFixed(1) + "px,0)";
+          });
+        };
+        onParallax();
+        window.addEventListener("scroll", onParallax, { passive: true });
+      }
+    }
+  }
+
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.querySelector("#site-nav");
   if (toggle && nav) {
@@ -13,6 +72,8 @@
       });
     });
   }
+
+  initDepth();
 
   var dialog = document.getElementById("product-dialog");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
