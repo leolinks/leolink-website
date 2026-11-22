@@ -983,3 +983,186 @@ input:focus, select:focus, textarea:focus {
   html { scroll-behavior: auto; }
   * { transition: none !important; }
 }
+
+.js .product-details { display: none; }
+
+.product-card { cursor: pointer; }
+
+.product-card .card-links a:not([target="_blank"]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+  color: var(--navy);
+  background: transparent;
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.product-card .card-links a:not([target="_blank"]):hover {
+  background: var(--white);
+  color: var(--navy);
+}
+
+.product-card .card-links a[target="_blank"] {
+  position: relative;
+  z-index: 2;
+}
+
+.product-dialog {
+  padding: 0;
+  border: 0;
+  background: var(--cream);
+  color: var(--ink);
+  width: min(680px, calc(100% - 32px));
+  max-height: min(880px, calc(100vh - 48px));
+  max-height: min(880px, calc(100dvh - 48px));
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(18, 28, 51, 0.35);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.product-dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+
+.product-dialog.is-closing {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+@starting-style {
+  .product-dialog[open] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+.product-dialog::backdrop {
+  background: rgba(18, 28, 51, 0.62);
+}
+
+.product-dialog-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--navy);
+}
+
+.product-dialog-toolbar button {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid rgba(247, 243, 234, 0.4);
+  background: transparent;
+  color: var(--cream);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.product-dialog-toolbar button:hover { background: rgba(255, 255, 255, 0.08); }
+
+.product-dialog-body {
+  padding: 18px 18px 28px;
+  overflow: auto;
+  max-height: calc(100dvh - 120px);
+}
+
+.product-dialog h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  margin: 14px 0 6px;
+}
+
+.product-dialog .value {
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.dialog-block { margin-top: 16px; }
+
+.dialog-block h3 {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+  margin-bottom: 8px;
+}
+
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dialog-actions .btn { width: auto; }
+
+.appwin-lg {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.appwin-lg .appwin-body {
+  min-height: 168px;
+  grid-template-columns: 108px minmax(0, 1fr);
+}
+
+.appwin-lg .appwin-name { font-size: 0.9rem; }
+.appwin-lg .appwin-nav { font-size: 0.75rem; padding: 12px 8px; }
+.appwin-lg .appwin-stat b { font-size: 1.35rem; }
+.appwin-lg .appwin-row { font-size: 0.85rem; }
+
+@media (max-width: 760px) {
+  .product-dialog {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    transform: translateY(100%);
+  }
+
+  .product-dialog[open] { transform: none; }
+  .product-dialog.is-closing { transform: translateY(100%); }
+
+  @starting-style {
+    .product-dialog[open] { transform: translateY(100%); opacity: 1; }
+  }
+
+  .product-dialog-body { max-height: none; }
+  .dialog-actions { flex-direction: column; }
+  .dialog-actions .btn { width: 100%; }
+  .product-card .card-links a:not([target="_blank"]) { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-dialog,
+  .product-dialog[open],
+  .product-dialog.is-closing {
+    transform: none !important;
+    transition: none !important;
+  }
+}
